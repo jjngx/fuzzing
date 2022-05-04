@@ -26,13 +26,18 @@ func TestReverse(t *testing.T) {
 }
 
 func FuzzReverse(f *testing.F) {
-	tt := []string{"nginx", " ", "123"}
+	tt := []string{"nginx", " ", "123", "XYZ", "!alf@"}
 	for _, tc := range tt {
 		f.Add(tc)
 	}
 	f.Fuzz(func(t *testing.T, input string) {
 		rev := fuzzing.Reverse(input)
 		doubleRev := fuzzing.Reverse(rev)
+		t.Logf("Number of runes: orig=%d, rev=%d, doubleRev=%d",
+			utf8.RuneCountInString(input),
+			utf8.RuneCountInString(rev),
+			utf8.RuneCountInString(doubleRev),
+		)
 
 		if input != doubleRev {
 			t.Errorf("Before: %q, after: %q", input, doubleRev)
